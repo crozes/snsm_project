@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="etatmer_array">
+        <item>0 - Calme</item>
+        <item>1 - Ridée</item>
+        <item>2 - Belle</item>
+        <item>3 - Peu agitée</item>
+        <item>4 - Agitée</item>
+        <item>5 - Forte</item>
+        <item>6 - Très forte</item>
+        <item>7 - Grosse</item>
+        <item>8 - Très grosse</item>
+        <item>9 - Énorme</item>
+    </string-array>
+</resources>
