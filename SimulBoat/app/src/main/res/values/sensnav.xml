@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sensnav_array">
+        <item>Mer de face</item>
+        <item>Mer de travers</item>
+        <item>Mer de dos</item>
+    </string-array>
+</resources>
