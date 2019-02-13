@@ -36,7 +36,6 @@
             android:id="@+id/editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
             android:inputType="textPersonName"
             android:text="Name"
             android:layout_marginBottom="5pt"/>
@@ -72,6 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Lancer l'enregistrement" />
+
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
