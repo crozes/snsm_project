@@ -17,6 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".CreateScenario"></activity>
+        <activity android:name=".Enregistrement"></activity>
     </application>
 
 </manifest>
