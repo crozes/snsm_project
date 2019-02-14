@@ -26,18 +26,33 @@
             android:textSize="15pt"
             android:textAlignment="center"/>
 
+        <Chronometer
+            android:id="@+id/simpleChronometer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="12pt" />
+
         <ImageView
             android:id="@+id/iEnregistrement"
             android:layout_width="match_parent"
             android:layout_height="150pt"
             android:maxWidth="50pt" />
 
-        <Button
-            android:id="@+id/bArret"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:text="Fin Enregistrement" />
 
+        <RelativeLayout
+            android:id="@+id/InnerRelativeLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true" >
+
+            <Button
+                android:id="@+id/bArret"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:text="Fin Enregistrement" />
+
+        </RelativeLayout>
     </LinearLayout>
 </RelativeLayout>

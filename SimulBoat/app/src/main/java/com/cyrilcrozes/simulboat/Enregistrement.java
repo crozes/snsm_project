@@ -3,15 +3,16 @@ package com.cyrilcrozes.simulboat;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.ImageView;
 
 public class Enregistrement extends CreateScenario {
     ImageView im;
     Button bArret;
+    Chronometer simpleChronometer;
 
     /** Called when the activity is first created. */
     public void onCreate(Bundle savedInstanceState) {
@@ -20,6 +21,8 @@ public class Enregistrement extends CreateScenario {
 
         Animation amB = AnimationUtils.loadAnimation(this,R.anim.blink_anim);
         bArret = (Button) findViewById(R.id.bArret);
+        simpleChronometer = (Chronometer) findViewById(R.id.simpleChronometer);
+        simpleChronometer.start();
 
         im = (ImageView) findViewById(R.id.iEnregistrement);
         im.setImageResource(R.drawable.logo);

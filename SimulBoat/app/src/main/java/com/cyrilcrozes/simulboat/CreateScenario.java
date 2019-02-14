@@ -8,6 +8,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.cyrilcrozes.simulboat.Enregistrement;
+import com.cyrilcrozes.simulboat.MainActivity;
+import com.cyrilcrozes.simulboat.R;
+
 public class CreateScenario extends MainActivity {
 
     EditText name;

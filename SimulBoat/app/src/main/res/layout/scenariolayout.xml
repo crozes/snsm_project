@@ -62,14 +62,24 @@
             android:id="@+id/spinnerSens"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="12pt"
-            android:layout_marginBottom="5pt"/>
+            android:textSize="12pt" />
 
-        <Button
-            android:id="@+id/bEnregistrement"
-            android:layout_width="match_parent"
+
+
+        <RelativeLayout
+            android:id="@+id/InnerRelativeLayout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lancer l'enregistrement" />
+            >
+
+            <Button
+                android:id="@+id/bEnregistrement"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:text="Lancer l'enregistrement" />
+
+        </RelativeLayout>
     </LinearLayout>
 
 
