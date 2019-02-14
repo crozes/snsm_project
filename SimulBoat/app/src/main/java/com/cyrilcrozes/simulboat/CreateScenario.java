@@ -8,21 +8,24 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import com.cyrilcrozes.simulboat.Enregistrement;
-import com.cyrilcrozes.simulboat.MainActivity;
-import com.cyrilcrozes.simulboat.R;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class CreateScenario extends MainActivity {
 
     EditText name;
+    Spinner spinnerEtat;
+    Spinner spinnerSens;
 
     /** Called when the activity is first created. */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.scenariolayout);
 
-        Spinner spinnerEtat = (Spinner) findViewById(R.id.spinnerEtat);
-        Spinner spinnerSens = (Spinner) findViewById(R.id.spinnerSens);
+        spinnerEtat = (Spinner) findViewById(R.id.spinnerEtat);
+        spinnerSens = (Spinner) findViewById(R.id.spinnerSens);
 
         name = (EditText) findViewById(R.id.editText);
 
@@ -47,6 +50,9 @@ public class CreateScenario extends MainActivity {
                 }
                 else{
                     Intent myIntent = new Intent(v.getContext(), Enregistrement.class);
+                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    Date date = new Date();
+                    myIntent.putExtra("data","{\"nom\":\""+name.getText().toString()+"\",\"date\":\""+dateFormat.format(date)+"\",\"etat\":\""+spinnerEtat.getSelectedItem().toString()+"\",\"navigation\":\""+spinnerSens.getSelectedItem().toString()+"\"}");
                     startActivityForResult(myIntent, 0);
                 }
             }

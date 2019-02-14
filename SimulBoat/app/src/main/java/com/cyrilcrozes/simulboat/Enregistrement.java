@@ -8,6 +8,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class Enregistrement extends CreateScenario {
     ImageView im;
@@ -19,6 +20,12 @@ public class Enregistrement extends CreateScenario {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.enregistrement);
 
+        Intent intent = getIntent();
+        String data = intent.getStringExtra("data");
+
+        TextView test = (TextView) findViewById(R.id.test);
+        test.setText(data);
+
         Animation amB = AnimationUtils.loadAnimation(this,R.anim.blink_anim);
         bArret = (Button) findViewById(R.id.bArret);
         simpleChronometer = (Chronometer) findViewById(R.id.simpleChronometer);
@@ -27,7 +34,7 @@ public class Enregistrement extends CreateScenario {
         im = (ImageView) findViewById(R.id.iEnregistrement);
         im.setImageResource(R.drawable.logo);
 
-        amB.setDuration(1300);
+        amB.setDuration(1800);
 
         im.startAnimation(amB);
 
