@@ -42,7 +42,6 @@ public class Enregistrement extends CreateScenario {
                 e.printStackTrace();
             }
         }
-
         Animation amB = AnimationUtils.loadAnimation(this,R.anim.blink_anim);
         bArret = (Button) findViewById(R.id.bArret);
         simpleChronometer = (Chronometer) findViewById(R.id.simpleChronometer);
