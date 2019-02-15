@@ -8,9 +8,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 public class CreateScenario extends MainActivity {
@@ -52,7 +54,16 @@ public class CreateScenario extends MainActivity {
                     Intent myIntent = new Intent(v.getContext(), Enregistrement.class);
                     DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                     Date date = new Date();
-                    myIntent.putExtra("data","{\"nom\":\""+name.getText().toString()+"\",\"date\":\""+dateFormat.format(date)+"\",\"etat\":\""+spinnerEtat.getSelectedItem().toString()+"\",\"navigation\":\""+spinnerSens.getSelectedItem().toString()+"\"}");
+                    JSONObject data = new JSONObject();
+                    try {
+                        data.put("nom",name.getText().toString());
+                        data.put("date",dateFormat.format(date));
+                        data.put("etat",spinnerEtat.getSelectedItem().toString());
+                        data.put("navigation",spinnerSens.getSelectedItem().toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    myIntent.putExtra("json", data.toString());
                     startActivityForResult(myIntent, 0);
                 }
             }
