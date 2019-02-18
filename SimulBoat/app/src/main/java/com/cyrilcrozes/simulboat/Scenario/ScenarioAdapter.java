@@ -19,6 +19,7 @@ public class ScenarioAdapter extends RecyclerView.Adapter<ScenarioAdapter.Scenar
         TextView date;
         TextView etatMer;
         TextView sensNav;
+        TextView duree;
 
         ScenarioViewHolder(View itemView) {
             super(itemView);
@@ -27,6 +28,7 @@ public class ScenarioAdapter extends RecyclerView.Adapter<ScenarioAdapter.Scenar
             date = (TextView)itemView.findViewById(R.id.dateScenario);
             etatMer = (TextView)itemView.findViewById(R.id.tvEtatMer);
             sensNav = (TextView)itemView.findViewById(R.id.tvSensNav);
+            duree = (TextView)itemView.findViewById(R.id.tvDuree);
         }
     }
 
@@ -45,11 +47,11 @@ public class ScenarioAdapter extends RecyclerView.Adapter<ScenarioAdapter.Scenar
 
     @Override
     public void onBindViewHolder(ScenarioViewHolder scenarioViewHolder, int i) {
-        scenarioViewHolder.name.setText(scenarios.get(i).name);
-        scenarioViewHolder.date.setText(scenarios.get(i).date);
-        scenarioViewHolder.etatMer.setText(scenarios.get(i).etatMer);
-        scenarioViewHolder.sensNav.setText(scenarios.get(i).sensNav);
-
+        scenarioViewHolder.name.setText(scenarios.get(i).getName());
+        scenarioViewHolder.date.setText(scenarios.get(i).getDate());
+        scenarioViewHolder.etatMer.setText(scenarios.get(i).getEtatMer());
+        scenarioViewHolder.sensNav.setText(scenarios.get(i).getSensNav());
+        scenarioViewHolder.duree.setText(scenarios.get(i).getDuree());
     }
 
     @Override

@@ -19,9 +19,9 @@ public class ListScenario extends MainActivity {
     private List<Scenario> scenarios = new ArrayList<>();
 
     private void initializeData(){
-        scenarios.add(new Scenario("Jour Tempete", "01/12/1232","0 - Calme","Mer de face"));
-        scenarios.add(new Scenario("Jour Calme", "02/12/1232","1 - Agité","Mer de dos"));
-        scenarios.add(new Scenario("Ça va bouger bébé", "03/12/1232","2 - Tempete","Mer de coté"));
+        scenarios.add(new Scenario("Jour Tempete", "01/12/1232","0 - Calme","Mer de face","00:12"));
+        scenarios.add(new Scenario("Jour Calme", "02/12/1232","1 - Agité","Mer de dos","02:39"));
+        scenarios.add(new Scenario("Ça va bouger bébé", "03/12/1232","2 - Tempete","Mer de coté","32:12"));
     }
 
     public void onCreate(Bundle savedInstanceState) {

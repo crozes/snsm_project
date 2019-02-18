@@ -7,6 +7,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
@@ -93,12 +94,15 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
 
         bArret.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                simpleChronometer.stop();
                 try {
+                    mJsonObject.put("duree",(int) (SystemClock.elapsedRealtime() - simpleChronometer.getBase()));
                     File file = new File(getApplicationContext().getFilesDir(),mJsonObject.get("nom")+".json");
                     FileOutputStream outputStream;
                     outputStream = openFileOutput(mJsonObject.get("nom")+".json", getApplicationContext().MODE_APPEND);
                     outputStream.write(mJsonObject.toString().getBytes());
                     Log.d("INFO","Creation fichier :"+ getApplicationContext().getFilesDir()+mJsonObject.get("nom")+".json");
+                    Log.d("INFO","JSON :"+ mJsonObject.toString());
                     outputStream.close();
                 } catch (JSONException e) {
                     e.printStackTrace();
