@@ -16,7 +16,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -101,11 +100,13 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
                 try {
                     mJsonObject.put("duree",(int) (SystemClock.elapsedRealtime() - simpleChronometer.getBase()));
                     mJsonObject.put("data", dataFromGyroAll);
-                    File file = new File(getApplicationContext().getFilesDir(),mJsonObject.get("nom")+".json");
-                    FileOutputStream outputStream;
-                    outputStream = openFileOutput(mJsonObject.get("nom")+".json", getApplicationContext().MODE_APPEND);
+
+                    String filename = mJsonObject.get("nom")+".json";
+                    FileOutputStream outputStream = null;
+                    File file = new File(getApplicationContext().getFilesDir(),filename);
+                    outputStream = openFileOutput(filename, MODE_PRIVATE);
                     outputStream.write(mJsonObject.toString().getBytes());
-                    Log.d("INFO","Creation fichier :"+ getApplicationContext().getFilesDir()+mJsonObject.get("nom")+".json");
+                    Log.d("INFO","Creation fichier :"+ getApplicationContext().getFilesDir()+filename);
                     Log.d("INFO","JSON :"+ mJsonObject.toString());
                     outputStream.close();
                 } catch (JSONException e) {
@@ -117,8 +118,13 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
                 }
 
                 Intent myIntent = new Intent(view.getContext(), MainActivity.class);
-                //startActivityForResult(myIntent, 0);
-                //finish();
+                try {
+                    myIntent.putExtra("Result",mJsonObject.get("nom").toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                startActivityForResult(myIntent, 0);
+                finish();
             }
 
         });
