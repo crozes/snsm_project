@@ -7,6 +7,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -22,9 +23,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Enregistrement extends CreateScenario implements SensorEventListener {
     JSONObject dataFromGyroXYZ = new JSONObject();
@@ -51,6 +54,10 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
 
 
     private float currentX, currentY, currentZ;
+
+    String filename = null;
+    //final static String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/enregistrements/";
+    String path = null;
 
     private String resultatJSON = "";
 
@@ -97,32 +104,54 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
         bArret.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 simpleChronometer.stop();
+                Intent myIntent = new Intent(view.getContext(), MainActivity.class);
+                JSONObject result = new JSONObject();
                 try {
                     mJsonObject.put("duree",(int) (SystemClock.elapsedRealtime() - simpleChronometer.getBase()));
                     mJsonObject.put("data", dataFromGyroAll);
+                    path = getApplicationContext().getFilesDir().toString();
+                    Log.d("INFO","Path : "+path);
+                    filename = mJsonObject.get("nom").toString();
+                    Log.d("INFO","Creation fichier :"+ path+filename);
+                    new File(path).mkdir();
+                    File file = new File(path+"/"+filename);
+                    if (!file.exists()) {
+                        file.createNewFile();
+                    }
+                    FileOutputStream fileOutputStream = new FileOutputStream(file,true);
+                    fileOutputStream.write((mJsonObject.toString().getBytes()));
 
-                    String filename = mJsonObject.get("nom")+".json";
-                    FileOutputStream outputStream = null;
-                    File file = new File(getApplicationContext().getFilesDir(),filename);
-                    outputStream = openFileOutput(filename, MODE_PRIVATE);
-                    outputStream.write(mJsonObject.toString().getBytes());
-                    Log.d("INFO","Creation fichier :"+ getApplicationContext().getFilesDir()+filename);
+                    //mJsonObject.toString().getBytes()
+
                     Log.d("INFO","JSON :"+ mJsonObject.toString());
-                    outputStream.close();
+                    result.put("status","OK");
+                    result.put("value",mJsonObject.get("nom").toString());
                 } catch (JSONException e) {
+                    try {
+                        result.put("status","KO");
+                        result.put("value",e.toString());
+                    } catch (JSONException e1) {
+                        e1.printStackTrace();
+                    }
                     e.printStackTrace();
                 } catch (FileNotFoundException e) {
+                    try {
+                        result.put("status","KO");
+                        result.put("value",e.toString());
+                    } catch (JSONException e1) {
+                        e1.printStackTrace();
+                    }
                     e.printStackTrace();
                 } catch (IOException e) {
+                    try {
+                        result.put("status","KO");
+                        result.put("value",e.toString());
+                    } catch (JSONException e1) {
+                        e1.printStackTrace();
+                    }
                     e.printStackTrace();
                 }
-
-                Intent myIntent = new Intent(view.getContext(), MainActivity.class);
-                try {
-                    myIntent.putExtra("Result",mJsonObject.get("nom").toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                myIntent.putExtra("resultJson",result.toString());
                 startActivityForResult(myIntent, 0);
                 finish();
             }

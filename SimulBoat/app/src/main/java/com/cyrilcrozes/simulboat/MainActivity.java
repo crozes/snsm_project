@@ -41,19 +41,26 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Log.d(ERROR, "Pas entrerr");
-        if(getIntent().hasExtra("Result")) {
-            Log.d(ERROR, "Entrerr");
-            String resultValue = new String(getIntent().getStringExtra("Result"));
+        if(getIntent().hasExtra("resultJson")) {
+            JSONObject resultValue = null;
+            try {
+                resultValue = new JSONObject(getIntent().getStringExtra("resultJson"));
+                Log.d("INFO",resultValue.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setCancelable(true);
             builder.setTitle("Alerte");
-            if(resultValue != "KO"){
-                builder.setMessage("Votre scénario a bien était enregistré sous le nom : " + resultValue);
-            }
-            else {
-                builder.setMessage("Erreur, votre scenario n'a pas été enregistré.");
-
+            try {
+                if(!resultValue.get("status").equals("KO")){
+                    builder.setMessage("Votre scénario a bien était enregistré sous le nom : " + resultValue.get("value"));
+                }
+                else {
+                    builder.setMessage("Erreur, votre scenario n'a pas été enregistré. " +  resultValue.get("value"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override

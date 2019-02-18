@@ -10,12 +10,24 @@ public class Scenario {
     private String sensNav;
     private String duree;
 
+    Scenario(){
+        this.name = null;
+        this.date = null;
+        this.etatMer = null;
+        this.sensNav = null;
+        this.duree = null;
+    }
+
     Scenario(String name, String date, String etatMer, String sensNav, String duree) {
         this.name = name;
         this.date = date;
         this.etatMer = etatMer;
         this.sensNav = sensNav;
         this.duree = duree;
+    }
+
+    public Scenario(JSONObject jsondata) {
+
     }
 
     public JSONObject toJson() throws JSONException {

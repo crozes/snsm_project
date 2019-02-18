@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.cyrilcrozes.simulboat"
+        applicationId "com.snsm.simulboat"
         minSdkVersion 18
         targetSdkVersion 28
         versionCode 1
