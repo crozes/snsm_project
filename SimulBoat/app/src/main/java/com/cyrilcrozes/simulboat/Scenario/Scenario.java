@@ -26,10 +26,6 @@ public class Scenario {
         this.duree = duree;
     }
 
-    public Scenario(JSONObject jsondata) {
-
-    }
-
     public JSONObject toJson() throws JSONException {
         JSONObject object = new JSONObject();
         object.put("nom",name);

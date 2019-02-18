@@ -7,7 +7,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.SystemClock;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -23,11 +22,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 public class Enregistrement extends CreateScenario implements SensorEventListener {
     JSONObject dataFromGyroXYZ = new JSONObject();
@@ -118,7 +115,7 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
                     if (!file.exists()) {
                         file.createNewFile();
                     }
-                    FileOutputStream fileOutputStream = new FileOutputStream(file,true);
+                    FileOutputStream fileOutputStream = new FileOutputStream(file,false);
                     fileOutputStream.write((mJsonObject.toString().getBytes()));
 
                     //mJsonObject.toString().getBytes()
@@ -189,7 +186,7 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
     }
 
     public void onEveryTick(final SensorEvent event) {
-        new CountDownTimer(30000, 2000) {
+        new CountDownTimer(300000, 1000) {
 
             public void onFinish() {
                 // When timer is finished

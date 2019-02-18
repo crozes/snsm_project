@@ -2,6 +2,7 @@ package com.cyrilcrozes.simulboat;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -11,6 +12,7 @@ import android.widget.Spinner;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -51,20 +53,27 @@ public class CreateScenario extends MainActivity {
                     name.setError("Merci de renseigner un nom");
                 }
                 else{
-                    Intent myIntent = new Intent(v.getContext(), Enregistrement.class);
-                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                    Date date = new Date();
-                    JSONObject data = new JSONObject();
-                    try {
-                        data.put("nom",name.getText().toString());
-                        data.put("date",dateFormat.format(date));
-                        data.put("etat",spinnerEtat.getSelectedItem().toString());
-                        data.put("navigation",spinnerSens.getSelectedItem().toString());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                    File file = new File(getApplicationContext().getFilesDir().toString()+"/"+name.getText().toString());
+                    if(file.exists()){
+                        name.setError("Nom scenario deja existant");
                     }
-                    myIntent.putExtra("json", data.toString());
-                    startActivityForResult(myIntent, 0);
+                    else
+                    {
+                        Intent myIntent = new Intent(v.getContext(), Enregistrement.class);
+                        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+                        Date date = new Date();
+                        JSONObject data = new JSONObject();
+                        try {
+                            data.put("nom",name.getText().toString());
+                            data.put("date",dateFormat.format(date));
+                            data.put("etat",spinnerEtat.getSelectedItem().toString());
+                            data.put("navigation",spinnerSens.getSelectedItem().toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        myIntent.putExtra("json", data.toString());
+                        startActivityForResult(myIntent, 0);
+                    }
                 }
             }
         });

@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.cyrilcrozes.simulboat.MainActivity;
@@ -28,7 +30,6 @@ public class ListScenario extends MainActivity {
     TextView alerte;
     private List<Scenario> scenarios = new ArrayList<>();
 
-    // This method will read data from FileInputStream.
     private String readFromFileInputStream(FileInputStream fileInputStream)
     {
         StringBuffer retBuf = new StringBuffer();
@@ -44,10 +45,12 @@ public class ListScenario extends MainActivity {
                     lineData = bufferedReader.readLine();
                 }
             }
-        }catch(IOException ex)
+        }
+        catch(IOException ex)
         {
 
-        }finally
+        }
+        finally
         {
             return retBuf.toString();
         }
@@ -58,11 +61,9 @@ public class ListScenario extends MainActivity {
         String path = getApplicationContext().getFilesDir().toString();
         File directory = new File(path);
         File[] files = directory.listFiles();
-        Log.d("Files", "Size: "+ files.length);
-        for (int i = 0; i < files.length; i++)
-        {
-            Log.d("Files", "FileName:" + files[i].getName());
-            String filename = files[i].getName();
+        for (File file : files) {
+            Log.d("Files", "FileName:" + file.getName());
+            String filename = file.getName();
             FileInputStream fileInputStream = null;
             try {
                 fileInputStream = getApplicationContext().openFileInput(filename);
@@ -101,5 +102,11 @@ public class ListScenario extends MainActivity {
             ScenarioAdapter adapter = new ScenarioAdapter(scenarios);
             scenariolist.setAdapter(adapter);
         }
+    }
+
+    public void onResume() {
+        super.onResume();
+
+
     }
 }

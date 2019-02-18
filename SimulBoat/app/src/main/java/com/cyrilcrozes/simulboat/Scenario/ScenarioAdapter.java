@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.cyrilcrozes.simulboat.R;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class ScenarioAdapter extends RecyclerView.Adapter<ScenarioAdapter.ScenarioViewHolder>{
 
@@ -51,7 +52,12 @@ public class ScenarioAdapter extends RecyclerView.Adapter<ScenarioAdapter.Scenar
         scenarioViewHolder.date.setText(scenarios.get(i).getDate());
         scenarioViewHolder.etatMer.setText(scenarios.get(i).getEtatMer());
         scenarioViewHolder.sensNav.setText(scenarios.get(i).getSensNav());
-        scenarioViewHolder.duree.setText(scenarios.get(i).getDuree());
+        int duree = Integer.parseInt(scenarios.get(i).getDuree());
+        String dureeFormat = String.format("%d min %d sec",
+                TimeUnit.MILLISECONDS.toMinutes(duree),
+                TimeUnit.MILLISECONDS.toSeconds(duree) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duree))
+        );
+        scenarioViewHolder.duree.setText(dureeFormat);
     }
 
     @Override
