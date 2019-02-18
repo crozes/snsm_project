@@ -38,21 +38,15 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
     JSONObject mJsonObject;
 
     private float lastX, lastY, lastZ;
-    private float tickValue;
 
     private SensorManager sensorManager;
     private Sensor accelerometer;
-
-    private float deltaXMax = 0;
-    private float deltaYMax = 0;
-    private float deltaZMax = 0;
 
     private float deltaX = 0;
     private float deltaY = 0;
     private float deltaZ = 0;
 
     private float vibrateThreshold = 0;
-    private TextView tickTime;
 
     private boolean isPassed = false;
 
@@ -66,13 +60,11 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.enregistrement);
 
-        TextView affichageTestJSON = (TextView) findViewById(R.id.test);
         Intent intent = getIntent();
         JSONObject data = new JSONObject();
         if(getIntent().hasExtra("json")) {
             try {
                 mJsonObject = new JSONObject(getIntent().getStringExtra("json"));
-                affichageTestJSON.setText(mJsonObject.toString());
                 resultatJSON = mJsonObject.toString();
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -92,11 +84,23 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
 
         amB.setRepeatCount(Animation.INFINITE);
 
+        //Enregistrement données gyro
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+            // Success! we have an accelerometer.
+            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+            vibrateThreshold = accelerometer.getMaximumRange() / 2;
+        } else {
+            // Fail! we don't have an accelerometer!
+        }
+
         bArret.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 simpleChronometer.stop();
                 try {
                     mJsonObject.put("duree",(int) (SystemClock.elapsedRealtime() - simpleChronometer.getBase()));
+                    mJsonObject.put("data", dataFromGyroAll);
                     File file = new File(getApplicationContext().getFilesDir(),mJsonObject.get("nom")+".json");
                     FileOutputStream outputStream;
                     outputStream = openFileOutput(mJsonObject.get("nom")+".json", getApplicationContext().MODE_APPEND);
@@ -112,28 +116,12 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
                     e.printStackTrace();
                 }
 
-                resultatJSON = resultatJSON + dataFromGyroAll.toString();
-                TextView affichageTestJSON = (TextView) findViewById(R.id.test);
-                affichageTestJSON.setText(resultatJSON);
                 Intent myIntent = new Intent(view.getContext(), MainActivity.class);
                 //startActivityForResult(myIntent, 0);
                 //finish();
             }
 
         });
-
-        //ENREGISTREMENT DONNEES GYROSCOPE
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
-            // Success! we have an accelerometer.
-
-            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-            vibrateThreshold = accelerometer.getMaximumRange() / 2;
-        } else {
-            // Fail! we don't have an accelerometer!
-
-        }
 
     }
 
@@ -197,6 +185,8 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
             dataFromGyroXYZ.put("Z", currentZ);
             dataFromGyroAll.put(dataFromGyroXYZ);
         }
-        catch (Exception e){}
+        catch (Exception e){
+            Log.d("ERROR","Erreur Jsonisation des valeurs du gyro");
+        }
     }
 }
