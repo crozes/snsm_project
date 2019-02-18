@@ -1,7 +1,13 @@
 package com.cyrilcrozes.simulboat;
 
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -11,6 +17,7 @@ import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,25 +26,53 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class Enregistrement extends CreateScenario {
+public class Enregistrement extends CreateScenario implements SensorEventListener {
+    JSONObject dataFromGyroXYZ = new JSONObject();
+    JSONArray dataFromGyroAll = new JSONArray();
+
     ImageView im;
     Button bArret;
     Chronometer simpleChronometer;
     String data;
     JSONObject mJsonObject;
 
+    private float lastX, lastY, lastZ;
+    private float tickValue;
+
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
+
+    private float deltaXMax = 0;
+    private float deltaYMax = 0;
+    private float deltaZMax = 0;
+
+    private float deltaX = 0;
+    private float deltaY = 0;
+    private float deltaZ = 0;
+
+    private float vibrateThreshold = 0;
+    private TextView tickTime;
+
+    private boolean isPassed = false;
+
+
+    private float currentX, currentY, currentZ;
+
+    private String resultatJSON = "";
+
     /** Called when the activity is first created. */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.enregistrement);
 
+        TextView affichageTestJSON = (TextView) findViewById(R.id.test);
         Intent intent = getIntent();
         JSONObject data = new JSONObject();
         if(getIntent().hasExtra("json")) {
             try {
                 mJsonObject = new JSONObject(getIntent().getStringExtra("json"));
-                TextView test = (TextView) findViewById(R.id.test);
-                test.setText(mJsonObject.toString());
+                affichageTestJSON.setText(mJsonObject.toString());
+                resultatJSON = mJsonObject.toString();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -72,20 +107,92 @@ public class Enregistrement extends CreateScenario {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
+                resultatJSON = resultatJSON + dataFromGyroAll.toString();
+                TextView affichageTestJSON = (TextView) findViewById(R.id.test);
+                affichageTestJSON.setText(resultatJSON);
                 Intent myIntent = new Intent(view.getContext(), MainActivity.class);
-                startActivityForResult(myIntent, 0);
-                finish();
+                //startActivityForResult(myIntent, 0);
+                //finish();
             }
 
         });
 
+        //ENREGISTREMENT DONNEES GYROSCOPE
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+            // Success! we have an accelerometer.
+
+            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+            vibrateThreshold = accelerometer.getMaximumRange() / 2;
+        } else {
+            // Fail! we don't have an accelerometer!
+
+        }
+
     }
 
+    //onResume() register the accelerometer for listening the events
     @Override
     protected void onResume() {
         super.onResume();
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    //onPause() unregister the accelerometer for stop listening the events
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(this);
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
 
+    @Override
+    public void onSensorChanged(SensorEvent event) {
 
+        if(!isPassed){
+            isPassed = true;
+            onEveryTick(event);
+        }
+    }
+
+    public void onEveryTick(final SensorEvent event) {
+        new CountDownTimer(30000, 2000) {
+
+            public void onFinish() {
+                // When timer is finished
+            }
+
+            public void onTick(long millisUntilFinished) {
+
+                // millisUntilFinished    The amount of time until finished.
+                // display the current x,y,z accelerometer values
+                displayCurrentValues();
+
+                // get the change of the x,y,z values of the accelerometer
+                deltaX = Math.abs(lastX - event.values[0]);
+                deltaY = Math.abs(lastY - event.values[1]);
+                deltaZ = Math.abs(lastZ - event.values[2]);
+            }
+        }.start();
+    }
+
+    // display the current x,y,z accelerometer values
+    public void displayCurrentValues() {
+        currentX = deltaX;
+        currentY = deltaY;
+        currentZ = deltaZ;
+        try {
+            dataFromGyroXYZ.put("X", currentX);
+            dataFromGyroXYZ.put("Y", currentY);
+            dataFromGyroXYZ.put("Z", currentZ);
+            dataFromGyroAll.put(dataFromGyroXYZ);
+        }
+        catch (Exception e){}
+    }
 }
