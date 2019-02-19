@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.cyrilcrozes.simulboat.ClickListener;
 import com.cyrilcrozes.simulboat.R;
 
 import java.util.List;
@@ -16,16 +17,16 @@ import java.util.concurrent.TimeUnit;
 public class ScenarioAdapter extends RecyclerView.Adapter<ScenarioViewHolder>{
 
     private List<Scenario> scenarios;
+    private final ClickListener listener;
 
-    ScenarioAdapter(List<Scenario> scenarios){
+    public ScenarioAdapter(List<Scenario> scenarios, ClickListener listener){
         this.scenarios = scenarios;
+        this.listener = listener;
     }
 
     @Override
     public ScenarioViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.scenariocard, viewGroup, false);
-        ScenarioViewHolder pvh = new ScenarioViewHolder(v);
-        return pvh;
+        return new ScenarioViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.scenariocard, viewGroup, false), listener);
     }
 
     @Override

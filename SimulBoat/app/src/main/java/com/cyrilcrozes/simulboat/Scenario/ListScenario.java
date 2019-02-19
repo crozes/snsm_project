@@ -1,21 +1,14 @@
 package com.cyrilcrozes.simulboat.Scenario;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.cyrilcrozes.simulboat.ClickListener;
 import com.cyrilcrozes.simulboat.MainActivity;
 import com.cyrilcrozes.simulboat.R;
-import com.cyrilcrozes.simulboat.Scenario.Scenario;
-import com.cyrilcrozes.simulboat.Scenario.ScenarioAdapter;
-import com.cyrilcrozes.simulboat.Utils.ItemClickSupport;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -104,31 +97,18 @@ public class ListScenario extends MainActivity {
             LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
             scenariolist.setLayoutManager(llm);
 
-            adapter = new ScenarioAdapter(scenarios);
+            adapter = new ScenarioAdapter(scenarios, new ClickListener() {
+                @Override public void onPositionClicked(int position) {
+                    // callback performed on click
+                }
+            });
+
             scenariolist.setAdapter(adapter);
         }
 
 
         RecyclerView rv = findViewById(R.id.rv);
 
-        ItemClickSupport.addTo(rv, R.layout.scenariocard)
-                .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
-                    @Override
-                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                        Log.e("TAG", "Position : "+position);
-                        final Scenario mScenario = adapter.getScenario(position);
-
-                        /*
-                        File file = new File(getApplicationContext().getFilesDir().toString()+"/"+mScenario.getName());
-                                boolean deleted = file.delete();
-
-                                if (deleted == true){
-                                    Toast.makeText(getApplicationContext(), mScenario.getName() + " supprimé",Toast.LENGTH_SHORT).show();
-                                    finish();
-                                    startActivity(getIntent());
-                                }*/
-                    }
-                });
     }
 
     public void onResume() {
