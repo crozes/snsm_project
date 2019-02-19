@@ -1,37 +1,19 @@
 package com.cyrilcrozes.simulboat.Scenario;
 
-import android.support.v7.widget.CardView;
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Button;
 
 import com.cyrilcrozes.simulboat.R;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class ScenarioAdapter extends RecyclerView.Adapter<ScenarioAdapter.ScenarioViewHolder>{
-
-    public static class ScenarioViewHolder extends RecyclerView.ViewHolder {
-        CardView cv;
-        TextView name;
-        TextView date;
-        TextView etatMer;
-        TextView sensNav;
-        TextView duree;
-
-        ScenarioViewHolder(View itemView) {
-            super(itemView);
-            cv = (CardView)itemView.findViewById(R.id.cv);
-            name = (TextView)itemView.findViewById(R.id.nomScenario);
-            date = (TextView)itemView.findViewById(R.id.dateScenario);
-            etatMer = (TextView)itemView.findViewById(R.id.tvEtatMer);
-            sensNav = (TextView)itemView.findViewById(R.id.tvSensNav);
-            duree = (TextView)itemView.findViewById(R.id.tvDuree);
-        }
-    }
+public class ScenarioAdapter extends RecyclerView.Adapter<ScenarioViewHolder>{
 
     private List<Scenario> scenarios;
 
@@ -70,4 +52,7 @@ public class ScenarioAdapter extends RecyclerView.Adapter<ScenarioAdapter.Scenar
         super.onAttachedToRecyclerView(recyclerView);
     }
 
+    public Scenario getScenario(int position){
+        return this.scenarios.get(position);
+    }
 }
