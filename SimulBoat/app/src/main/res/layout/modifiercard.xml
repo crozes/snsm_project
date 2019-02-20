@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nom" />
+
+        <EditText
+            android:id="@+id/etName"
+            android:layout_below="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Name"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:layout_below="@+id/etName"
+            android:id="@+id/tvEtatMer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sens Navigation" />
+
+        <Spinner
+            android:layout_below="@+id/tvEtatMer"
+            android:id="@+id/spinnerEtatMer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:id="@+id/tvSensNav"
+            android:layout_below="@+id/spinnerEtatMer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Etat Navigation" />
+
+        <Spinner
+            android:layout_below="@+id/tvSensNav"
+            android:id="@+id/spinnerSensNav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"/>
+
+        <Button
+            android:id="@+id/buttonAnnuler"
+            android:layout_below="@+id/spinnerSensNav"
+            android:layout_width="50pt"
+            android:layout_height="wrap_content"
+            android:text="Annuler" />
+
+        <Button
+            android:id="@+id/buttonOk"
+            android:layout_width="50pt"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/spinnerSensNav"
+            android:layout_toRightOf="@+id/buttonAnnuler"
+            android:text="Valider"
+            />
+</RelativeLayout>

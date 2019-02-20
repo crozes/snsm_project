@@ -111,6 +111,7 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
                     filename = mJsonObject.get("nom").toString();
                     Log.d("INFO","Creation fichier :"+ path+filename);
                     new File(path).mkdir();
+
                     File file = new File(path+"/"+filename);
                     if (!file.exists()) {
                         file.createNewFile();
@@ -122,11 +123,11 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
 
                     Log.d("INFO","JSON :"+ mJsonObject.toString());
                     result.put("status","OK");
-                    result.put("value",mJsonObject.get("nom").toString());
+                    result.put("value","Votre scénario a bien était enregistré sous le nom : "+mJsonObject.get("nom").toString());
                 } catch (JSONException e) {
                     try {
                         result.put("status","KO");
-                        result.put("value",e.toString());
+                        result.put("value","Erreur, votre scenario n'a pas été enregistré. "+e.toString());
                     } catch (JSONException e1) {
                         e1.printStackTrace();
                     }
@@ -134,7 +135,7 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
                 } catch (FileNotFoundException e) {
                     try {
                         result.put("status","KO");
-                        result.put("value",e.toString());
+                        result.put("value","Erreur, votre scenario n'a pas été enregistré. "+e.toString());
                     } catch (JSONException e1) {
                         e1.printStackTrace();
                     }
@@ -142,7 +143,7 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
                 } catch (IOException e) {
                     try {
                         result.put("status","KO");
-                        result.put("value",e.toString());
+                        result.put("value","Erreur, votre scenario n'a pas été enregistré. "+e.toString());
                     } catch (JSONException e1) {
                         e1.printStackTrace();
                     }

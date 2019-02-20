@@ -53,12 +53,7 @@ public class MainActivity extends AppCompatActivity {
             builder.setCancelable(true);
             builder.setTitle("Alerte");
             try {
-                if(!resultValue.get("status").equals("KO")){
-                    builder.setMessage("Votre scénario a bien était enregistré sous le nom : " + resultValue.get("value"));
-                }
-                else {
-                    builder.setMessage("Erreur, votre scenario n'a pas été enregistré. " +  resultValue.get("value"));
-                }
+                builder.setMessage(resultValue.get("value").toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
