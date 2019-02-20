@@ -17,8 +17,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,10 +26,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Enregistrement extends CreateScenario implements SensorEventListener {
-    JSONObject dataFromGyroXYZ = new JSONObject();
-    JSONArray dataFromGyroAll = new JSONArray();
+    ArrayList<JSONObject> listObjectJson = new ArrayList<JSONObject>();
 
     ImageView im;
     Button bArret;
@@ -46,18 +46,14 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
     private float deltaY = 0;
     private float deltaZ = 0;
 
-    private float vibrateThreshold = 0;
-
     private boolean isPassed = false;
 
-
-    private float currentX, currentY, currentZ;
 
     String filename = null;
     //final static String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/enregistrements/";
     String path = null;
 
-    private String resultatJSON = "";
+    TextView testDev;
 
     /** Called when the activity is first created. */
     public void onCreate(Bundle savedInstanceState) {
@@ -65,12 +61,9 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.enregistrement);
 
-        Intent intent = getIntent();
-        JSONObject data = new JSONObject();
         if(getIntent().hasExtra("json")) {
             try {
                 mJsonObject = new JSONObject(getIntent().getStringExtra("json"));
-                resultatJSON = mJsonObject.toString();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -86,8 +79,10 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
         amB.setDuration(1800);
 
         im.startAnimation(amB);
+        testDev = (TextView) findViewById(R.id.testDev);
 
         amB.setRepeatCount(Animation.INFINITE);
+
 
         //Enregistrement données gyro
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -95,7 +90,7 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
             // Success! we have an accelerometer.
             accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
             sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-            vibrateThreshold = accelerometer.getMaximumRange() / 2;
+            float vibrateThreshold = accelerometer.getMaximumRange() / 2;
         } else {
             // Fail! we don't have an accelerometer!
         }
@@ -107,7 +102,7 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
                 JSONObject result = new JSONObject();
                 try {
                     mJsonObject.put("duree",(int) (SystemClock.elapsedRealtime() - simpleChronometer.getBase()));
-                    mJsonObject.put("data", dataFromGyroAll);
+                    mJsonObject.put("data", listObjectJson);
                     path = getApplicationContext().getFilesDir().toString();
                     Log.d("INFO","Path : "+path);
                     filename = mJsonObject.get("nom").toString();
@@ -120,8 +115,6 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
                     }
                     FileOutputStream fileOutputStream = new FileOutputStream(file,false);
                     fileOutputStream.write((mJsonObject.toString().getBytes()));
-
-                    //mJsonObject.toString().getBytes()
 
                     Log.d("INFO","JSON :"+ mJsonObject.toString());
                     result.put("status","OK");
@@ -189,7 +182,7 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
     }
 
     public void onEveryTick(final SensorEvent event) {
-        new CountDownTimer(300000, 1000) {
+        new CountDownTimer(3000000, 1000) {
 
             public void onFinish() {
                 // When timer is finished
@@ -197,31 +190,22 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
 
             public void onTick(long millisUntilFinished) {
 
-                // millisUntilFinished    The amount of time until finished.
-                // display the current x,y,z accelerometer values
-                displayCurrentValues();
-
                 // get the change of the x,y,z values of the accelerometer
                 deltaX = Math.abs(lastX - event.values[0]);
                 deltaY = Math.abs(lastY - event.values[1]);
                 deltaZ = Math.abs(lastZ - event.values[2]);
+
+                try {
+                    JSONObject dataFromGyroXYZ = new JSONObject();
+                    dataFromGyroXYZ.put("X", deltaX);
+                    dataFromGyroXYZ.put("Y", deltaY);
+                    dataFromGyroXYZ.put("Z", deltaZ);
+                    listObjectJson.add(dataFromGyroXYZ);
+                }
+                catch (Exception e){
+                    Log.d("ERROR","Erreur Jsonisation des valeurs du gyro");
+                }
             }
         }.start();
-    }
-
-    // display the current x,y,z accelerometer values
-    public void displayCurrentValues() {
-        currentX = deltaX;
-        currentY = deltaY;
-        currentZ = deltaZ;
-        try {
-            dataFromGyroXYZ.put("X", currentX);
-            dataFromGyroXYZ.put("Y", currentY);
-            dataFromGyroXYZ.put("Z", currentZ);
-            dataFromGyroAll.put(dataFromGyroXYZ);
-        }
-        catch (Exception e){
-            Log.d("ERROR","Erreur Jsonisation des valeurs du gyro");
-        }
     }
 }

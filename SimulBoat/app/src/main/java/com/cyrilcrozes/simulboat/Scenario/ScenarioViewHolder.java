@@ -38,6 +38,7 @@ public class ScenarioViewHolder extends RecyclerView.ViewHolder implements View.
     TextView duree;
     Button bMod;
     Button bSupp;
+    Button bPart;
     private WeakReference<ClickListener> listenerRef;
 
     ScenarioViewHolder(View itemView, ClickListener listener) {
@@ -51,6 +52,7 @@ public class ScenarioViewHolder extends RecyclerView.ViewHolder implements View.
         duree = (TextView)itemView.findViewById(R.id.tvDuree);
         bMod = (Button) itemView.findViewById(R.id.bModifier);
         bSupp = (Button) itemView.findViewById(R.id.bSupprimer);
+        bPart = (Button) itemView.findViewById(R.id.bPartager);
 
         bSupp.setOnClickListener(this);
         bMod.setOnClickListener(this);
@@ -66,11 +68,18 @@ public class ScenarioViewHolder extends RecyclerView.ViewHolder implements View.
             modFunction(view);
             //Toast.makeText(view.getContext(), "MOD PRESSED = " + String.valueOf(getAdapterPosition()), Toast.LENGTH_SHORT).show();
         }
+        else if (view.getId() == bPart.getId()){
+            partFunction(view);
+        }
         else{
             //Toast.makeText(v.getContext(), "Pouet",Toast.LENGTH_SHORT).show();
         }
 
         listenerRef.get().onPositionClicked(getAdapterPosition());
+    }
+
+    private  void partFunction(final View v){
+
     }
 
     private void suppFunction(final View v){
@@ -188,7 +197,7 @@ public class ScenarioViewHolder extends RecyclerView.ViewHolder implements View.
                     }
 
                     result.put("status","OK");
-                    result.put("value","Modification effectué");
+                    result.put("value",finalOldName+ " a été modifié");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } catch (FileNotFoundException e) {
