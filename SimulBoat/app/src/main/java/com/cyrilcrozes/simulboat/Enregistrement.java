@@ -2,6 +2,7 @@ package com.cyrilcrozes.simulboat;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -61,6 +62,7 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
     /** Called when the activity is first created. */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.enregistrement);
 
         Intent intent = getIntent();
