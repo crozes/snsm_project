@@ -8,7 +8,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.SystemClock;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -31,9 +30,9 @@ import java.util.ArrayList;
 public class Enregistrement extends CreateScenario implements SensorEventListener {
     ArrayList<JSONObject> listObjectJson = new ArrayList<JSONObject>();
 
-    ImageView im;
+    ImageView imageView;
     Button bArret;
-    Chronometer simpleChronometer;
+    Chronometer chronometer;
     String data;
     JSONObject mJsonObject;
 
@@ -65,47 +64,44 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
                 e.printStackTrace();
             }
         }
-        Animation amB = AnimationUtils.loadAnimation(this,R.anim.blink_anim);
+        Animation animation = AnimationUtils.loadAnimation(this,R.anim.blink_anim);
         bArret = (Button) findViewById(R.id.bArret);
-        simpleChronometer = (Chronometer) findViewById(R.id.simpleChronometer);
-        simpleChronometer.start();
+        chronometer = (Chronometer) findViewById(R.id.simpleChronometer);
+        chronometer.start();
 
-        im = (ImageView) findViewById(R.id.iEnregistrement);
-        im.setImageResource(R.drawable.logo);
+        imageView = (ImageView) findViewById(R.id.iEnregistrement);
+        imageView.setImageResource(R.drawable.logo);
 
-        amB.setDuration(1800);
+        animation.setDuration(1800);
 
-        im.startAnimation(amB);
+        imageView.startAnimation(animation);
 
-        amB.setRepeatCount(Animation.INFINITE);
+        animation.setRepeatCount(Animation.INFINITE);
 
-
-        //Enregistrement données gyro
+        Log.d("INFO","Enregistrement des données du gyroscope ->");
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
-            // Success! we have an accelerometer.
+            Log.d("INFO","Accelerometre present");
             accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
             sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-            float vibrateThreshold = accelerometer.getMaximumRange() / 2;
         } else {
-            // Fail! we don't have an accelerometer!
+            Log.d("ERROR","Pas d'acceleromettre");
         }
 
         bArret.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                simpleChronometer.stop();
+                chronometer.stop();
                 Intent myIntent = new Intent(view.getContext(), MainActivity.class);
                 JSONObject result = new JSONObject();
                 try {
-                    mJsonObject.put("duree",(int) (SystemClock.elapsedRealtime() - simpleChronometer.getBase()));
+                    mJsonObject.put("duree",(int) (SystemClock.elapsedRealtime() - chronometer.getBase()));
                     mJsonObject.put("data", listObjectJson);
-                    path = getApplicationContext().getFilesDir().toString();
-                    Log.d("INFO","Path : "+path);
                     filename = mJsonObject.get("nom").toString();
-                    Log.d("INFO","Creation fichier :"+ path+filename);
-                    new File(path).mkdir();
-
-                    File file = new File(path+"/"+filename+".json");
+                    File scenarioDir =  new File (getApplicationContext().getExternalFilesDir(null).toString());
+                    if(!scenarioDir.exists())
+                        scenarioDir.mkdirs();
+                    File file = new File(scenarioDir, filename+".json");
+                    Log.d("INFO","Creation fichier :"+ file.getAbsolutePath());
                     if (!file.exists()) {
                         file.createNewFile();
                         file.setReadable(true, false);
@@ -153,14 +149,12 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
 
     }
 
-    //onResume() register the accelerometer for listening the events
     @Override
     protected void onResume() {
         super.onResume();
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
-    //onPause() unregister the accelerometer for stop listening the events
     @Override
     protected void onPause() {
         super.onPause();

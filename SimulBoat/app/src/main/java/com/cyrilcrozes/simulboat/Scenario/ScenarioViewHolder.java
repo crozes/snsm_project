@@ -2,7 +2,6 @@ package com.cyrilcrozes.simulboat.Scenario;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -76,7 +75,7 @@ public class ScenarioViewHolder extends RecyclerView.ViewHolder implements View.
             modFunction(view, fileName);
         }
         else{
-            //Toast.makeText(v.getContext(), "Pouet",Toast.LENGTH_SHORT).show();
+            Log.d("ERROR","Erreur au click du boutton, id non reconnu");
         }
 
         listenerRef.get().onPositionClicked(getAdapterPosition());
@@ -95,7 +94,7 @@ public class ScenarioViewHolder extends RecyclerView.ViewHolder implements View.
                 .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        File file = new File(v.getContext().getFilesDir()+"/"+fileName);
+                        File file = getFileInDir(v,fileName);
                         Intent myIntent = new Intent(v.getContext(), MainActivity.class);
                         JSONObject result = new JSONObject();
                         if (file.delete()){
@@ -124,7 +123,7 @@ public class ScenarioViewHolder extends RecyclerView.ViewHolder implements View.
     private void shareFunction (final View v, String fileName){
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
-        File filelocation = new File(v.getContext().getFilesDir()+"/"+fileName);
+        File filelocation = getFileInDir(v,fileName);
         if (filelocation.exists()){
             Log.d("INFO","Fichier "+fileName+" existe");
             Uri path = Uri.fromFile(filelocation);
@@ -145,7 +144,8 @@ public class ScenarioViewHolder extends RecyclerView.ViewHolder implements View.
         JSONObject dataGet = null;
         String oldName = null;
         try {
-            FileInputStream fileInputStream = v.getContext().openFileInput(fileName);
+            File file = getFileInDir(v,fileName);
+            FileInputStream fileInputStream = new FileInputStream(file);
             InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             String lineData = bufferedReader.readLine();
@@ -212,7 +212,7 @@ public class ScenarioViewHolder extends RecyclerView.ViewHolder implements View.
 
                     Log.d("INFO","New data : "+finalDataGet.toString());
 
-                    File file = new File(v.getContext().getFilesDir()+"/"+finalDataGet.get("nom").toString()+".json");
+                    File file = getFileInDir(v,finalDataGet.get("nom").toString()+".json");
                     if (!file.exists()) {
                         file.createNewFile();
                         file.setExecutable(true,false);
@@ -222,7 +222,7 @@ public class ScenarioViewHolder extends RecyclerView.ViewHolder implements View.
                         fileOutputStream.write((finalDataGet.toString().getBytes()));
 
                         if (!finalOldName.equals(finalDataGet.get("nom").toString())){
-                            File fileToDelete = new File(v.getContext().getFilesDir()+"/"+ finalOldName+".json");
+                            File fileToDelete = getFileInDir(v,finalOldName+".json");
                             fileToDelete.delete();
                         }
 
@@ -253,6 +253,10 @@ public class ScenarioViewHolder extends RecyclerView.ViewHolder implements View.
             }
         });
         dialog.show();
+    }
+
+    private File getFileInDir(View v, String fileName){
+        return new File(v.getContext().getExternalFilesDir(null)+"/"+fileName);
     }
 
 }

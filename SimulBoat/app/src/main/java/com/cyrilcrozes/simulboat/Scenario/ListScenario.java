@@ -23,15 +23,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListScenario extends MainActivity {
-    RecyclerView scenariolist;
-    TextView alerte;
-    private List<Scenario> scenarios = new ArrayList<>();
-    ScenarioAdapter adapter;
+    RecyclerView rvScenariosList;
+    TextView tvAlerte;
+    private List<Scenario> listScenarios = new ArrayList<>();
+    ScenarioAdapter scenarioAdapter;
 
     private String readFromFileInputStream(FileInputStream fileInputStream)
     {
         StringBuffer retBuf = new StringBuffer();
-
         try {
             if (fileInputStream != null) {
                 InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
@@ -46,7 +45,7 @@ public class ListScenario extends MainActivity {
         }
         catch(IOException ex)
         {
-
+            ex.printStackTrace();
         }
         finally
         {
@@ -55,20 +54,19 @@ public class ListScenario extends MainActivity {
     }
 
     private void initializeData(){
-        String path = getApplicationContext().getFilesDir().toString();
-        File directory = new File(path);
-        File[] files = directory.listFiles();
-        for (File file : files) {
-            Log.d("Files", "FileName:" + file.getName());
-            String filename = file.getName();
-            FileInputStream fileInputStream = null;
+        String directoryPath = getApplicationContext().getExternalFilesDir(null).toString();
+        File directory = new File(directoryPath);
+        File[] tabFiles = directory.listFiles();
+        Log.d("INFO", "Fichier présent dans le dossier : ");
+        for (File file : tabFiles) {
+            Log.d("INFO", file.getName());
             try {
-                fileInputStream = getApplicationContext().openFileInput(filename);
+                FileInputStream fileInputStream = new FileInputStream(file);
                 String fileData = readFromFileInputStream(fileInputStream);
-                JSONObject jsondata = new JSONObject(fileData);
+                JSONObject jsonData = new JSONObject(fileData);
                 Scenario scenario = new Scenario();
-                scenario.initializeWithJson(jsondata);
-                scenarios.add(scenario);
+                scenario.initializeWithJson(jsonData);
+                listScenarios.add(scenario);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
@@ -80,34 +78,24 @@ public class ListScenario extends MainActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.scenariolist);
-
-        alerte = (TextView) findViewById(R.id.tvAlerteScenarioList);
-
+        tvAlerte = (TextView) findViewById(R.id.tvAlerteScenarioList);
         initializeData();
-
-        if (scenarios.isEmpty()){
-            alerte.setText("Pas de scenario enregistrés");
+        if (listScenarios.isEmpty()){
+            tvAlerte.setText("Pas de scenario enregistré");
         }
         else
         {
-            scenariolist = (RecyclerView) findViewById(R.id.rv);
-            scenariolist.setHasFixedSize(true);
-
+            rvScenariosList = (RecyclerView) findViewById(R.id.rv);
+            rvScenariosList.setHasFixedSize(true);
             LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
-            scenariolist.setLayoutManager(llm);
-
-            adapter = new ScenarioAdapter(scenarios, new ClickListener() {
+            rvScenariosList.setLayoutManager(llm);
+            scenarioAdapter = new ScenarioAdapter(listScenarios, new ClickListener() {
                 @Override public void onPositionClicked(int position) {
-                    // callback performed on click
+
                 }
             });
-
-            scenariolist.setAdapter(adapter);
+            rvScenariosList.setAdapter(scenarioAdapter);
         }
-
-
-        RecyclerView rv = findViewById(R.id.rv);
-
     }
 
     public void onResume() {

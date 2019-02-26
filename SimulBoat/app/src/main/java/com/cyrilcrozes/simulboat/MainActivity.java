@@ -51,15 +51,15 @@ public class MainActivity extends AppCompatActivity {
             }
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setCancelable(true);
-            builder.setTitle("Alerte");
+            builder.setTitle("Info");
             try {
                 builder.setMessage(resultValue.get("value").toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
                 public void onClick(DialogInterface dialog, int which) {
+
                 }
             });
             AlertDialog dialog = builder.create();
