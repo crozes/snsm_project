@@ -8,6 +8,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -17,7 +18,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,10 +50,7 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
 
 
     String filename = null;
-    //final static String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/enregistrements/";
     String path = null;
-
-    TextView testDev;
 
     /** Called when the activity is first created. */
     public void onCreate(Bundle savedInstanceState) {
@@ -79,7 +76,6 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
         amB.setDuration(1800);
 
         im.startAnimation(amB);
-        testDev = (TextView) findViewById(R.id.testDev);
 
         amB.setRepeatCount(Animation.INFINITE);
 
@@ -109,11 +105,15 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
                     Log.d("INFO","Creation fichier :"+ path+filename);
                     new File(path).mkdir();
 
-                    File file = new File(path+"/"+filename);
+                    File file = new File(path+"/"+filename+".json");
                     if (!file.exists()) {
                         file.createNewFile();
+                        file.setReadable(true, false);
+                        file.setWritable(true,false);
+                        file.setExecutable(true,false);
                     }
-                    FileOutputStream fileOutputStream = new FileOutputStream(file,false);
+
+                    FileOutputStream fileOutputStream = new FileOutputStream(file);
                     fileOutputStream.write((mJsonObject.toString().getBytes()));
 
                     Log.d("INFO","JSON :"+ mJsonObject.toString());

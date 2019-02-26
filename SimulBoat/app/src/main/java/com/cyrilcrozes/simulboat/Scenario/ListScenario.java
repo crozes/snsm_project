@@ -55,7 +55,6 @@ public class ListScenario extends MainActivity {
     }
 
     private void initializeData(){
-
         String path = getApplicationContext().getFilesDir().toString();
         File directory = new File(path);
         File[] files = directory.listFiles();

@@ -38,8 +38,9 @@
                 android:id="@+id/imageView"
                 android:layout_width="match_parent"
                 android:layout_height="100pt"
-                android:paddingBottom="10pt"
                 android:layout_alignParentBottom="true"
+                android:contentDescription="LogoSNSM"
+                android:paddingBottom="10pt"
                 app:srcCompat="@drawable/logosnsm" />
 
         </RelativeLayout>
