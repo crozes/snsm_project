@@ -179,7 +179,7 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
         new CountDownTimer(3000000, 1000) {
 
             public void onFinish() {
-                // When timer is finished
+                Log.d("INFO","Fin du de l'enregistrement - Fin du timer");
             }
 
             public void onTick(long millisUntilFinished) {
