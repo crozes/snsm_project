@@ -36,7 +36,7 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
     String data;
     JSONObject mJsonObject;
 
-    private float lastX, lastY, lastZ;
+    float lastX, lastY, lastZ;
 
     private SensorManager sensorManager;
     private Sensor accelerometer;
@@ -49,7 +49,6 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
 
 
     String filename = null;
-    String path = null;
 
     /** Called when the activity is first created. */
     public void onCreate(Bundle savedInstanceState) {
