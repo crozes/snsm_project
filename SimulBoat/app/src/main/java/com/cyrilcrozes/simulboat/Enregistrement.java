@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,15 +26,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class Enregistrement extends CreateScenario implements SensorEventListener {
-    ArrayList<JSONObject> listObjectJson = new ArrayList<JSONObject>();
+    JSONArray listObjectJson = new JSONArray();
 
     ImageView imageView;
     Button bArret;
     Chronometer chronometer;
-    String data;
     JSONObject mJsonObject;
 
     float lastX, lastY, lastZ;
@@ -56,6 +55,7 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.enregistrement);
 
+        /** Récupération des données de la page précédente */
         if(getIntent().hasExtra("json")) {
             try {
                 mJsonObject = new JSONObject(getIntent().getStringExtra("json"));
@@ -63,6 +63,8 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
                 e.printStackTrace();
             }
         }
+
+        /** Création de l'annimation du bateau */
         Animation animation = AnimationUtils.loadAnimation(this,R.anim.blink_anim);
         bArret = (Button) findViewById(R.id.bArret);
         chronometer = (Chronometer) findViewById(R.id.simpleChronometer);
@@ -77,6 +79,8 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
 
         animation.setRepeatCount(Animation.INFINITE);
 
+
+        /** Enregistrement */
         Log.d("INFO","Enregistrement des données du gyroscope ->");
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
@@ -87,14 +91,13 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
             Log.d("ERROR","Pas d'acceleromettre");
         }
 
+        /** Action boutton Arret */
         bArret.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 chronometer.stop();
                 Intent myIntent = new Intent(view.getContext(), MainActivity.class);
                 JSONObject result = new JSONObject();
                 try {
-                    mJsonObject.put("duree",(int) (SystemClock.elapsedRealtime() - chronometer.getBase()));
-                    mJsonObject.put("data", listObjectJson);
                     filename = mJsonObject.get("nom").toString();
                     File scenarioDir =  new File (getApplicationContext().getExternalFilesDir(null).toString());
                     if(!scenarioDir.exists())
@@ -108,10 +111,13 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
                         file.setExecutable(true,false);
                     }
 
-                    FileOutputStream fileOutputStream = new FileOutputStream(file);
-                    fileOutputStream.write((mJsonObject.toString().getBytes()));
-
+                    mJsonObject.put("duree",(int) (SystemClock.elapsedRealtime() - chronometer.getBase()));
+                    mJsonObject.put("data", listObjectJson);
                     Log.d("INFO","JSON :"+ mJsonObject.toString());
+
+                    FileOutputStream fileOutputStream = new FileOutputStream(file);
+                    fileOutputStream.write(mJsonObject.toString().getBytes());
+
                     result.put("status","OK");
                     result.put("value","Votre scénario a bien était enregistré sous le nom : "+mJsonObject.get("nom").toString());
                 } catch (JSONException e) {
@@ -193,7 +199,7 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
                     dataFromGyroXYZ.put("X", deltaX);
                     dataFromGyroXYZ.put("Y", deltaY);
                     dataFromGyroXYZ.put("Z", deltaZ);
-                    listObjectJson.add(dataFromGyroXYZ);
+                    listObjectJson.put(dataFromGyroXYZ);
                 }
                 catch (Exception e){
                     Log.d("ERROR","Erreur Jsonisation des valeurs du gyro");
