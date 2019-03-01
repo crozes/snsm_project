@@ -209,11 +209,9 @@ public class ScenarioViewHolder extends RecyclerView.ViewHolder implements View.
                     finalDataGet.put("nom",ed.getText().toString());
                     finalDataGet.put("etat",spEtatmer.getSelectedItem().toString());
                     finalDataGet.put("navigation",spSensNav.getSelectedItem().toString());
-
                     Log.d("INFO","New data : "+finalDataGet.toString());
-
-                    File file = getFileInDir(v,finalDataGet.get("nom").toString()+".json");
-                    if (!file.exists()) {
+                    File file = getFileInDir(v,finalDataGet.get("nom")+".json");
+                    if (!file.exists() || finalOldName.equals(finalDataGet.get("nom"))) {
                         file.createNewFile();
                         file.setExecutable(true,false);
                         file.setWritable(true,false);
@@ -233,7 +231,8 @@ public class ScenarioViewHolder extends RecyclerView.ViewHolder implements View.
                         myIntent.putExtra("resultJson",result.toString());
                         v.getContext().startActivity(myIntent);
                     }
-                    else{
+                    else
+                    {
                         ed.setError("Nom scenario deja existant");
                     }
                 } catch (JSONException e) {

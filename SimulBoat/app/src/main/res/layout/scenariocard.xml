@@ -21,7 +21,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginRight="10dp"
-                app:srcCompat="@drawable/logo" />
+                app:srcCompat="@drawable/vedette" />
 
             <TextView
                 android:id="@+id/nomScenario"

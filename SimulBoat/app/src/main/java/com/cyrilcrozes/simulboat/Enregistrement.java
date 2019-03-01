@@ -70,7 +70,7 @@ public class Enregistrement extends CreateScenario implements SensorEventListene
         chronometer.start();
 
         imageView = (ImageView) findViewById(R.id.iEnregistrement);
-        imageView.setImageResource(R.drawable.logo);
+        imageView.setImageResource(R.drawable.vedette);
 
         animation.setDuration(1800);
 
