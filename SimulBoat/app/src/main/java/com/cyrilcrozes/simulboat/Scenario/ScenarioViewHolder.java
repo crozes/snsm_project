@@ -124,13 +124,29 @@ public class ScenarioViewHolder extends RecyclerView.ViewHolder implements View.
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         File filelocation = getFileInDir(v,fileName);
+        String name = null;
+        String date = null;
+        JSONObject dataGet = null;
         if (filelocation.exists()){
+            try {
+                File file = getFileInDir(v,fileName);
+                FileInputStream fileInputStream = new FileInputStream(file);
+                InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String lineData = bufferedReader.readLine();
+                dataGet = new JSONObject(lineData);
+                name = dataGet.get("nom").toString();
+                date = dataGet.get("date").toString();
+            }
+            catch (Exception e){
+                Log.d("ERROR","Erreur : "+e.toString());
+            }
             Log.d("INFO","Fichier "+fileName+" existe");
             Uri path = Uri.fromFile(filelocation);
             Intent emailIntent = new Intent(Intent.ACTION_SEND);
             emailIntent .setType("text/html");
-            emailIntent .putExtra(Intent.EXTRA_SUBJECT, "Scenario SimulBoat");
-            emailIntent .putExtra(Intent.EXTRA_TEXT, "Scenario SimulBoat");
+            emailIntent .putExtra(Intent.EXTRA_SUBJECT, "Scenario SimulBoat : "+name);
+            emailIntent .putExtra(Intent.EXTRA_TEXT, "Si-joint le scenario "+name+" enregistré le "+date);
             emailIntent .putExtra(Intent.EXTRA_STREAM, path);
             v.getContext().startActivity(Intent.createChooser(emailIntent , "Scenario SimulBoat"));
         }
