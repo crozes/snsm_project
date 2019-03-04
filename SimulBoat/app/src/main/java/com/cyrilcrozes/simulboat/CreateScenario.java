@@ -60,7 +60,7 @@ public class CreateScenario extends MainActivity {
                     else
                     {
                         Intent myIntent = new Intent(v.getContext(), Enregistrement.class);
-                        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+                        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                         Date date = new Date();
                         JSONObject data = new JSONObject();
                         try {
