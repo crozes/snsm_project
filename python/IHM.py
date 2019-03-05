@@ -1,15 +1,83 @@
 # -*- coding: utf-8 -*
+# !/usr/bin/python3
 # On importe Tkinter
 from tkinter import *
+from tkinter import messagebox
 from PIL import ImageTk, Image
 import json
 import os,sys
+from time import *
+import Class
+
+
+
+
+
 path = "/home/pi/scene/"
-files=os.listdir(path)
-for file in files:
-	print(file)
+items = []
+
+def getName(path):
+    
+    files=os.listdir(path)
+    return files
+
+class ItemList:
+
+    def __init__(self,path):
+        try:
+            json_data=open(path,'r')
+            data_dict=json.load(json_data)
+            self.nom=data_dict["nom"]
+            self.duree=data_dict["duree"]
+            self.navigation=data_dict["navigation"]
+            self.etat=data_dict["etat"]
+            self.date=data_dict["date"]
+            self.data=data_dict["data"]
+            json_data.close()
+            
+        except ValueError:
+            messagebox.showinfo("Alerte", "échec d'ouverture du fichier"+path)
+
+
+    def _get_nom(self):
+        return self.nom
+    def _get_navigation(self):
+        return self.navigation
+    def _get_etat(self):
+        return self.etat
+    def _get_date(self):
+        return self.date
+    def _get_data(self):
+        return self.data
+
+   
+       
+            
+
+def load_object(path,FrameName):
+    files=os.listdir(path)
+    
+    for file in files:
+      it=ItemList(path+file)
+      items.append(it)
+    cpt=0
+    bag="#D3D3D3"
+    for i in items:
+        globals()['SceneFrame%s'%cpt]=Frame(FrameName, width=250, height=50, borderwidth=1, background='black')
+        globals()['SceneFrame%s'%cpt].pack(fill="x")
+        globals()['champ_label%s'%cpt] = Label(globals()['SceneFrame%s'%cpt], text="Nom: "+i.nom+" | Durée: "+strftime('%M : %S',gmtime((i.duree)/1000))+ "\nSens: "+i.navigation+"\nEtat: "+i.etat+"\nDate: "+i.date, bg=bag)
+        globals()['champ_label%s'%cpt].pack(fill="x")
+        cpt+=1
+        if "#D3D3D3" in bag:
+            bag="white"
+        elif "white" in bag:
+            bag="#D3D3D3"
+       
+ 
+        
 # On crée une fenêtre, racine de notre interface
 fenetre = Tk()
+
 #creation de la frame titre logo
 LogoFrame = Frame(fenetre, width=500, height=50, borderwidth=1, background='orange')
 LogoFrame.pack(fill="x")
@@ -28,21 +96,57 @@ champ_label = Label(LogoFrame, text="SimulBoat",background="orange",font="ArialB
 
 # On affiche le label dans la fenêtre
 champ_label.pack(side="right",fill="x")
-MainFrame=Frame(fenetre, width=500, height=500, borderwidth=1, background='black')
+MainFrame=Frame(fenetre, width=500, height=500, borderwidth=1, background='white')
 MainFrame.pack(fill="both")
-LeftFrame=Frame(MainFrame, width=250, height=500, borderwidth=1, background='blue')
+vsb = Scrollbar(MainFrame, orient=VERTICAL)
+vsb.grid(row=0, column=1, sticky=N+S)
+c = Canvas(MainFrame,width=250, height=500,background='white',yscrollcommand=vsb.set)
+c.grid(row=0, column=0, sticky="news")
+vsb.config(command=c.yview)
+MainFrame.grid_rowconfigure(0, weight=1)
+MainFrame.grid_columnconfigure(0, weight=1)
+
+LeftFrame=Frame(c, width=250, height=500, borderwidth=1, background='white')
 LeftFrame.pack(fill="both",side="left")
-RightFrame=Frame(MainFrame, width=250, height=500, borderwidth=1, background='red')
-RightFrame.pack(fill="both",side="right")
-bouton_importer = Button(fenetre, text="Importer", command=fenetre.quit)
+#RightFrame=Frame(c, width=250, height=500, borderwidth=1, background='red')
+#RightFrame.pack(fill="both",side="right")
+load_object(path,LeftFrame)
+c.create_window(1, 1,  window=LeftFrame)
+LeftFrame.update_idletasks()
+c.config(scrollregion=c.bbox("all"))
+
+#messagebox=tkMessageBox.FunctionName(title, message [, options])
+def hello():
+   messagebox.showinfo("Say Hello", "Hello World")
+   
+def reload():
+    items.clear()
+    c.delete(ALL)
+    LeftFrame=Frame(c, width=250, height=500, borderwidth=1, background='white')
+    LeftFrame.pack(fill="both",side="left")
+    load_object(path,LeftFrame)
+    c.create_window(1, 1,  window=LeftFrame)
+    LeftFrame.update_idletasks()
+    c.config(scrollregion=c.bbox("all"))
+
+   
+bouton_importer = Button(fenetre, text="Importer", command=reload)
 bouton_importer.pack()
 
-liste = Listbox(LeftFrame)
-liste.pack()
-json_data=open("/home/pi/scene/jfjrjr.json",'r') 
-data_dict =  json.load(json_data)
-print(data_dict["nom"])
-item="Nom: "+data_dict["nom"]+"Sens: "+data_dict["navigation"]+"Etat: "+data_dict["etat"]+"Date: "+data_dict["date"]
-liste.insert(END,item)
+
+#SceneFrame=Frame(LeftFrame, width=250, height=50, borderwidth=1, background='yellow')
+#SceneFrame.pack(fill="x",side="top")
+
+#liste = Listbox(LeftFrame,yscrollcommand = scrollbar.set)
+
+#liste.pack()
+#json_data=open("/home/pi/scene/jfjrjr.json",'r') 
+#data_dict =  json.load(json_data)
+#print(data_dict["nom"])
+#champ_label = Label(SceneFrame, text="Nom: "+data_dict["nom"]+" | Durée: "+strftime('%M : %S',gmtime((data_dict["duree"])/1000))+ "\nSens: "+data_dict["navigation"]+"\nEtat: "+data_dict["etat"]+"\nDate: "+data_dict["date"])
+#champ_label.pack(fill="x")
+#item="Nom: "+data_dict["nom"]+'\n'+"Sens: "+data_dict["navigation"]+"Etat: "+data_dict["etat"]+"Date: "+data_dict["date"]
+
+#liste.insert(END,champ_label)
 # On démarre la boucle Tkinter qui s'interompt quand on ferme la fenêtre
 fenetre.mainloop()
