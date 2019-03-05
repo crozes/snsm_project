@@ -84,7 +84,13 @@ LogoFrame.pack(fill="x")
 #creation du canevas contenant le logo
 canvas = Canvas(LogoFrame, width=50, height=50,background="orange")
 img=Image.open("logosnsm.png")
+Rimg=Image.open("reload.png")
+Pimg=Image.open("play.jpg")
 img=img.resize((50,50), Image.ANTIALIAS)
+Rimg=Rimg.resize((50,50),Image.ANTIALIAS)
+Pimg=Pimg.resize((50,50),Image.ANTIALIAS)
+Rimgg=ImageTk.PhotoImage(Rimg)
+Pimgg=ImageTk.PhotoImage(Pimg)
 imgg=ImageTk.PhotoImage(img)
 canvas.create_image(25,25,image=imgg)
 
@@ -130,23 +136,11 @@ def reload():
     c.config(scrollregion=c.bbox("all"))
 
    
-bouton_importer = Button(fenetre, text="Importer", command=reload)
-bouton_importer.pack()
+bouton_Reload = Button(fenetre,image=Rimgg,command=reload)
+bouton_Reload.pack(side="left")
+   
+bouton_Play= Button(fenetre,image=Pimgg,command=reload)
+bouton_Play.pack(side="left")
 
-
-#SceneFrame=Frame(LeftFrame, width=250, height=50, borderwidth=1, background='yellow')
-#SceneFrame.pack(fill="x",side="top")
-
-#liste = Listbox(LeftFrame,yscrollcommand = scrollbar.set)
-
-#liste.pack()
-#json_data=open("/home/pi/scene/jfjrjr.json",'r') 
-#data_dict =  json.load(json_data)
-#print(data_dict["nom"])
-#champ_label = Label(SceneFrame, text="Nom: "+data_dict["nom"]+" | Durée: "+strftime('%M : %S',gmtime((data_dict["duree"])/1000))+ "\nSens: "+data_dict["navigation"]+"\nEtat: "+data_dict["etat"]+"\nDate: "+data_dict["date"])
-#champ_label.pack(fill="x")
-#item="Nom: "+data_dict["nom"]+'\n'+"Sens: "+data_dict["navigation"]+"Etat: "+data_dict["etat"]+"Date: "+data_dict["date"]
-
-#liste.insert(END,champ_label)
 # On démarre la boucle Tkinter qui s'interompt quand on ferme la fenêtre
 fenetre.mainloop()
