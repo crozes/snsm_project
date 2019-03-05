@@ -13,6 +13,7 @@ import Class
 
 
 
+
 path = "/home/pi/scene/"
 items = []
 
@@ -79,18 +80,22 @@ def load_object(path,FrameName):
 fenetre = Tk()
 
 #creation de la frame titre logo
-LogoFrame = Frame(fenetre, width=500, height=50, borderwidth=1, background='orange')
+LogoFrame = Frame(fenetre, width=500, height=50, borderwidth=1, background='#E54F08')
 LogoFrame.pack(fill="x")
 #creation du canevas contenant le logo
-canvas = Canvas(LogoFrame, width=50, height=50,background="orange")
+canvas = Canvas(LogoFrame, width=50, height=50,background="#E54F08")
 img=Image.open("logosnsm.png")
 Rimg=Image.open("reload.png")
-Pimg=Image.open("play.jpg")
+Pimg=Image.open("play.png")
+Simg=Image.open("stop.png")
+
 img=img.resize((50,50), Image.ANTIALIAS)
 Rimg=Rimg.resize((50,50),Image.ANTIALIAS)
 Pimg=Pimg.resize((50,50),Image.ANTIALIAS)
+Simg=Simg.resize((50,50),Image.ANTIALIAS)
 Rimgg=ImageTk.PhotoImage(Rimg)
 Pimgg=ImageTk.PhotoImage(Pimg)
+Simgg=ImageTk.PhotoImage(Simg)
 imgg=ImageTk.PhotoImage(img)
 canvas.create_image(25,25,image=imgg)
 
@@ -98,11 +103,12 @@ canvas.pack(side="left")
 # On crée un label (ligne de texte) 
 # Note : le premier paramètre passé au constructeur de Label est notre
 # interface racine
-champ_label = Label(LogoFrame, text="SimulBoat",background="orange",font="ArialBlack")
+AR =("ArialBlack",20,"bold")
+champ_label = Label(LogoFrame, text="SimulBoat",background="#E54F08",font=AR)
 
 # On affiche le label dans la fenêtre
 champ_label.pack(side="right",fill="x")
-MainFrame=Frame(fenetre, width=500, height=500, borderwidth=1, background='white')
+MainFrame=Frame(fenetre, width=500, height=500, borderwidth=1, background="#FAFAFA")
 MainFrame.pack(fill="both")
 vsb = Scrollbar(MainFrame, orient=VERTICAL)
 vsb.grid(row=0, column=1, sticky=N+S)
@@ -139,8 +145,12 @@ def reload():
 bouton_Reload = Button(fenetre,image=Rimgg,command=reload)
 bouton_Reload.pack(side="left")
    
-bouton_Play= Button(fenetre,image=Pimgg,command=reload)
+bouton_Play= Button(fenetre,image=Pimgg)
 bouton_Play.pack(side="left")
+
+bouton_Play= Button(fenetre,image=Simgg)
+bouton_Play.pack(side="left")
+
 
 # On démarre la boucle Tkinter qui s'interompt quand on ferme la fenêtre
 fenetre.mainloop()
